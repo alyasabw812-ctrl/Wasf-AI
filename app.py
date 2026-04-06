@@ -40,4 +40,30 @@ class WasfAI_Engine:
 # مثال لتشغيل الخوارزمية
 # engine = WasfAI_Engine(api_key="YOUR_KEY")
 # print(engine.generate_smart_description("ساعة ذكية", "electronics", "مقاومة للماء، بطارية 7 أيام"))
+def client_dashboard_logic(user_input):
+    """
+    هذا الجزء يمثل 'لوحة التحكم' حيث يختار العميل إعداداته
+    """
+    settings = {
+        "sector": user_input.get("sector"), # المجال: عقارات، تقنية، ملابس
+        "target_audience": user_input.get("audience"), # الجمهور المستهدف
+        "language_style": user_input.get("style"), # نبرة الصوت: فكاهي، رسمي، حماسي
+    }
+    return settings
+    import requests
 
+def verify_usdt_payment(wallet_address, expected_amount):
+    """
+    وظيفة للتحقق من وصول الدفع للمحفظة تلقائياً عبر TronGrid API
+    """
+    url = f"https://api.trongrid.io/v1/accounts/{wallet_address}/transactions/trc20"
+    response = requests.get(url)
+    
+    if response.status_code == 200:
+        transactions = response.json().get('data', [])
+        for tx in transactions:
+            # التحقق من القيمة والعملة (USDT)
+            if tx['token_info']['symbol'] == 'USDT' and float(tx['value']) >= expected_amount:
+                return True # الدفع تم بنجاح، افتح الخدمة للعميل
+    return False
+    
